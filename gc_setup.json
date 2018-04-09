@@ -68,11 +68,11 @@
       }
     ],
     "grade_breakdown" : {
-      "participation": 5,
-      "assignment1" : 20,
-      "assignment2" : 25,
-      "assignment3" : 25,
-      "assignment4" : 25
+      "Homeworks": 10,
+      "Quizes" : 10,
+      "Midterm 1" : 20,
+      "Midterm 2" : 20,
+      "Final Exam" : 40
     }
   }
 }
