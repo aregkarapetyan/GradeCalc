@@ -26,9 +26,13 @@ def loadGradesData():
 
     with open('gc_grades.json') as data_file:
         student_grades = json.load(data_file)
+
+    return student_grades
+
+def askForStudentInfo():
     studentID = raw_input("Please insert your studentID: ")
     name = raw_input("Please insert your name: ")
-    return student_grades, studentID, name
+    return studentID, name
 
 
 # Get list of grades for selected student
@@ -106,7 +110,7 @@ def getLetterGrade(curr_grade, convMatrix, studentID, student_grades):
 # Lecturer has access to all grades if he wants so
 def printStudentGrades(student_grades):
     lectAns = raw_input(
-        "If you are a lecturer, you can view everyone's grades. Do you want to view all grades?(Type yes)")
+        "Lecturers can view everyone's grades. Do you want to view all grades?(Type yes)")
     if lectAns == "Yes" or lectAns == "yes" or lectAns == "y" or lectAns == "Y":
         print (json.dumps(student_grades, indent=4, sort_keys=True))
 
@@ -115,15 +119,14 @@ def printStudentGrades(student_grades):
 def main():
     grades, convMatrix = loadSetupData()
     user_type = raw_input("Please tell if you are a student or teacher")
+    student_grades = loadGradesData()
     if user_type == "student":
-        student_grades, studentID, name = loadGradesData()
+        studentID, name = askForStudentInfo()
         current_grades = askForAssignmentMarks(student_grades, grades, studentID, name)
         saveGrades(student_grades, current_grades)
         curr_grade = printCurrentGrade(grades, current_grades, studentID, name)
         getLetterGrade(curr_grade, convMatrix, studentID, student_grades)
     else:
-        print "Sorry we don't support the type"
-        #printStudentGrades(student_grades)
-
+        printStudentGrades(student_grades)
 
 main()
