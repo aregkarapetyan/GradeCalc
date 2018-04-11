@@ -114,12 +114,16 @@ def printStudentGrades(student_grades):
 # Heart of our program, which executes all function in needed order
 def main():
     grades, convMatrix = loadSetupData()
-    student_grades, studentID, name = loadGradesData()
-    current_grades = askForAssignmentMarks(student_grades, grades, studentID, name)
-    saveGrades(student_grades, current_grades)
-    curr_grade = printCurrentGrade(grades, current_grades, studentID, name)
-    getLetterGrade(curr_grade, convMatrix, studentID, student_grades)
-    printStudentGrades(student_grades)
+    user_type = raw_input("Please tell if you are a student or teacher")
+    if user_type == "student":
+        student_grades, studentID, name = loadGradesData()
+        current_grades = askForAssignmentMarks(student_grades, grades, studentID, name)
+        saveGrades(student_grades, current_grades)
+        curr_grade = printCurrentGrade(grades, current_grades, studentID, name)
+        getLetterGrade(curr_grade, convMatrix, studentID, student_grades)
+    else:
+        print "Sorry we don't support the type"
+        #printStudentGrades(student_grades)
 
 
 main()
