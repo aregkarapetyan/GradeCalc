@@ -1,10 +1,3 @@
-#######################################################################################################
-#To do for me
-#print everyone's grade for teacher                                                 -
-#hlib pass
-#git commit
-#######################################################################################################
-
 # Libraries used in the program
 import json
 import hashlib
