@@ -34,7 +34,7 @@ def load_grades_data():
 
 # Load Student info
 # Deals with cases if file is empty or doesn't exist
-def load_data():
+def load_users_data():
     try:
         file = open('gc_studinfo.json', 'r+')
         if file.readlines() == []:
@@ -134,7 +134,7 @@ def save_grades(student_grades, current_grades):
     file.close()
 
 # Write our changes in the initial file with students' data
-def save_data(data,username, password, id, user_type):
+def save_users_data(data,username, password, id, user_type):
     current_data = {id: {"username":username, "password": password, "type": user_type}}
     data[current_data.keys()[0]] = current_data[current_data.keys()[0]]
     file = open("gc_studinfo.json", "w")
@@ -165,26 +165,36 @@ def get_letter_grade(curr_grade, conv_matrix, id, data,username, max_pos):
             break
 
 # Lecturer has access to all grades if he wants so
-def print_student_grades(student_grades, id,username):
+def print_student_grades(student_grades, id, username, users):
     lectAns = raw_input("Lecturers can view everyone's grades. Do you want to view all grades?(Type yes)")
     if lectAns == "Yes" or lectAns == "yes" or lectAns == "y" or lectAns == "Y":
-        print (json.dumps(student_grades, indent=4, sort_keys=True))
-        #print "Student ID   Name    " +" "
-        #print id + " "+username +" "+ student_grades[id]["Homeworks"]+" " + student_grades[id]["Quizes"] +" "+ student_grades[id]["Midterm 1"] +" "+ student_grades[id]["Midterm 2"] +" "+ student_grades[id]["Final Exam"]
+        #print (json.dumps(student_grades, indent=4, sort_keys=True))
+        if student_grades[student_grades.keys()[0]]:
+            titles = "StudentID, Name, "
+            for key in student_grades[student_grades.keys()[0]]:
+                titles = titles + key + ", "
+            print titles
+            for key in student_grades:
+                st_data = key + ", " + users[key]["username"]
+                st = student_grades[key]
+                for key1 in st:
+                    st_data = st_data + st[key1] + ", "
+
+                print st_data
 
 # Heart of our program, which executes all functions in needed order
 def main():
     grades, conv_matrix = load_setup_data()
-    data = load_data()
+    users = load_users_data()
     student_grades = load_grades_data()
     user_type = raw_input("Please tell if you are a student or teacher(s/t)")
     id = raw_input("Please insert your AUA ID: ")
     if user_type == "student" or user_type == "s" or user_type == "S" or user_type == "Student":
         user_type = "Student"
         if id in student_grades.keys():
-            username = username_validation(data, id, username_attempts)
+            username = username_validation(users, id, username_attempts)
             if username != False:
-                password = pass_validation(data, id, pass_attempts)
+                password = pass_validation(users, id, pass_attempts)
             else:
                 password = False
         else:
@@ -195,15 +205,15 @@ def main():
         else:
             current_grades = askForAssignmentMarks(student_grades, grades, id,username, password)
             save_grades(student_grades, current_grades)
-            save_data(data,username, password, id, user_type)
+            save_users_data(users, username, password, id, user_type)
             curr_grade, max_pos = print_current_grade(grades, current_grades, id,username)
-            get_letter_grade(curr_grade, conv_matrix, id, data,username, max_pos)
+            get_letter_grade(curr_grade, conv_matrix, id, users, username, max_pos)
     elif user_type == "teacher" or user_type == "t" or user_type == "T" or user_type == "Teacher":
         user_type = "Teacher"
-        if id in data.keys():
-            username = username_validation(data, id, username_attempts)
+        if id in users.keys():
+            username = username_validation(users, id, username_attempts)
             if username != False:
-                password = pass_validation(data, id, pass_attempts)
+                password = pass_validation(users, id, pass_attempts)
             else:
                 password = False
         else:
@@ -212,8 +222,8 @@ def main():
         if password == False:
             print("Try again later")
         else:
-            print_student_grades(student_grades, id,username)
-            save_data(data,username, password, id, user_type)
+            print_student_grades(student_grades, id, username, users)
+            save_users_data(users, username, password, id, user_type)
     else:
         print "Not valid input"
 
